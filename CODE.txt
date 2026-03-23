@@ -1,0 +1,93 @@
+clear all
+close all
+clc
+
+%MODULE 1
+%reading the data from CSV
+data = readtable('nvidia.csv');
+
+%convert to datetime format - 'MM/DD/YYYY'
+data.Date = datetime(data.Date, 'InputFormat','M/d/yyyy');
+
+%plot 
+figure;
+plot(data.Date, data.AdjClose, 'LineWidth', 2);
+title('Nvidia Adjusted closing price');
+xlabel('Data')
+ylabel('price')
+grid
+
+%MODULE 2:
+% Use the 'cwt' function on adjusted closing price data
+[wt, f] = cwt(data.AdjClose, 'amor'); % 'amor' is the Morlet wavelet
+
+% 'wt' is the wavelet transform coefficients (complex numbers)
+% 'f' is the frequencies associated with the wavelet transform
+
+% Plot the wavelet transform
+figure;
+surface(data.Date, f, abs(wt)); % Plot absolute value of wavelet transform
+shading interp; % Smooth the shading for a better visual
+xlabel('Date');
+ylabel('Frequency (Hz)');
+title('Wavelet Transform of Stock Prices');
+colorbar;
+
+%Module 3
+% Set time window (optional)
+startDate = datetime('2023-02-01');
+endDate = datetime('2023-03-01');
+
+% Mask for the selected time range
+timeMask = data.Date >= startDate & data.Date <= endDate;
+
+% Surface plot for zoomed region
+
+figure;
+surface(data.Date(timeMask), f, abs(wt(:, timeMask)));
+shading interp;
+xlabel('Date');
+ylabel('Frequency (Hz)');
+title('Zoomed Wavelet Transform');
+colorbar;
+view(2);
+ylim([0 0.1]); % Zoom into low frequencies
+
+%Module 4
+
+% Energy over all time for each frequency (rows)
+energy_per_freq = sum(abs(wt).^2, 2); % [Freq x 1]
+
+% Normalize for entropy
+energy_norm = energy_per_freq / sum(energy_per_freq);
+
+% Wavelet entropy (measure of signal complexity)
+entropy_wavelet = -sum(energy_norm .* log(energy_norm + eps)); % eps avoids log(0)
+
+% Mean and standard deviation of coefficients
+mean_coeff = mean(abs(wt(:)));
+std_coeff = std(abs(wt(:)));
+
+fprintf("Wavelet Entropy: %.4f\n", entropy_wavelet);
+fprintf("Mean Coefficient Magnitude: %.4f\n", mean_coeff);
+fprintf("Standard Deviation: %.4f\n", std_coeff);
+
+%Module 5
+% Apply Discrete Wavelet Transform (DWT)
+[ca, cd] = dwt(data.AdjClose, 'db4'); % Approx & Detail using Daubechies-4
+
+% Threshold detail coefficients (cd)
+threshold = 0.2 * max(abs(cd));
+cd_denoised = wthresh(cd, 's', threshold); % Soft thresholding
+
+% Reconstruct signal from denoised coefficients
+denoised = idwt(ca, cd_denoised, 'db4');
+
+% Plot original vs. denoised
+figure
+plot(data.Date(1:length(denoised)), data.AdjClose(1:length(denoised)), 'b');
+hold on;
+plot(data.Date(1:length(denoised)), denoised, 'r', 'LineWidth', 1.5);
+legend('Original', 'Denoised');
+title('Original vs. Denoised Signal');
+xlabel('Date'); ylabel('Adjusted Close');
