@@ -84,7 +84,7 @@ The project is divided into modular stages:
 
 Used to measure signal complexity:
 
-E = -\sum p_i \log(p_i)
+<img width="185" height="37" alt="image" src="https://github.com/user-attachments/assets/a0337ef8-4db1-4b7f-ae46-3e6c15dd4967" />
 
 * Higher entropy → more randomness
 * Lower entropy → more structured behavior
@@ -155,7 +155,7 @@ Each module is independent, making the system:
 
 <img width="672" height="395" alt="image" src="https://github.com/user-attachments/assets/0046cf64-a910-4aa4-a1b6-1e5a7553e9a8" />
 
-<img width="688" height="415" alt="image" src="https://github.com/user-attachments/assets/1fe6f3aa-58ea-4d3c-bee3-650f728a5b9c" />
+<img width="672" height="415" alt="image" src="https://github.com/user-attachments/assets/1fe6f3aa-58ea-4d3c-bee3-650f728a5b9c" />
 
 
 
