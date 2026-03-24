@@ -151,6 +151,14 @@ Each module is independent, making the system:
 
 ---
 
+## Results
+
+<img width="672" height="395" alt="image" src="https://github.com/user-attachments/assets/0046cf64-a910-4aa4-a1b6-1e5a7553e9a8" />
+
+<img width="688" height="415" alt="image" src="https://github.com/user-attachments/assets/1fe6f3aa-58ea-4d3c-bee3-650f728a5b9c" />
+
+
+
 ## 📌 Applications
 
 * 📈 Stock market analysis
